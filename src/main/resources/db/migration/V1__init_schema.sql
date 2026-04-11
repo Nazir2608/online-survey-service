@@ -1,11 +1,5 @@
--- ============================================================
 -- V1__init_schema.sql
 -- Initial schema for online-survey-service
--- NOTE: Using VARCHAR(50) for enum columns instead of native
--- PostgreSQL enum types. Hibernate @Enumerated(EnumType.STRING)
--- sends plain VARCHAR — this avoids type cast errors entirely.
--- CHECK constraints enforce valid values at the DB level.
--- ============================================================
 
 -- ─── USERS ─────────────────────────────────────────────────
 CREATE TABLE users (
