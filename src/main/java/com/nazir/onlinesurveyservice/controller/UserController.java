@@ -38,17 +38,13 @@ public class UserController {
 
     @Operation(summary = "Update own profile")
     @PutMapping("/me")
-    public ResponseEntity<UserResponse> updateProfile(
-            @AuthenticationPrincipal User user,
-            @Valid @RequestBody UpdateProfileRequest request) {
+    public ResponseEntity<UserResponse> updateProfile(@AuthenticationPrincipal User user, @Valid @RequestBody UpdateProfileRequest request) {
         return ResponseEntity.ok(userService.updateProfile(user, request));
     }
 
     @Operation(summary = "Change own password")
     @PutMapping("/me/password")
-    public ResponseEntity<Void> changePassword(
-            @AuthenticationPrincipal User user,
-            @Valid @RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal User user, @Valid @RequestBody ChangePasswordRequest request) {
         userService.changePassword(user, request);
         return ResponseEntity.noContent().build();
     }
@@ -58,9 +54,7 @@ public class UserController {
     @Operation(summary = "[ADMIN] List all users")
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PageResponse<UserResponse>> listUsers(
-            @RequestParam(defaultValue = "0")  int page,
-            @RequestParam(defaultValue = "20") int size) {
+    public ResponseEntity<PageResponse<UserResponse>> listUsers(@RequestParam(defaultValue = "0")  int page, @RequestParam(defaultValue = "20") int size) {
         var pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return ResponseEntity.ok(userService.getAllUsers(pageable));
     }
@@ -75,18 +69,14 @@ public class UserController {
     @Operation(summary = "[ADMIN] Change user role")
     @PatchMapping("/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> changeRole(
-            @PathVariable UUID id,
-            @RequestParam Role role) {
+    public ResponseEntity<UserResponse> changeRole(@PathVariable UUID id, @RequestParam Role role) {
         return ResponseEntity.ok(userService.changeRole(id, role));
     }
 
     @Operation(summary = "[ADMIN] Enable or disable a user")
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> setEnabled(
-            @PathVariable UUID id,
-            @RequestParam boolean enabled) {
+    public ResponseEntity<UserResponse> setEnabled(@PathVariable UUID id, @RequestParam boolean enabled) {
         return ResponseEntity.ok(userService.setEnabled(id, enabled));
     }
 }
