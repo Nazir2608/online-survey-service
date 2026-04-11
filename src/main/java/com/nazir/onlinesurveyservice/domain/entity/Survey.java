@@ -31,7 +31,7 @@ public class Survey extends BaseEntity {
     private String slug;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "survey_status")
+    @Column(nullable = false, columnDefinition = "survey_status",length = 50)
     @Builder.Default
     private SurveyStatus status = SurveyStatus.DRAFT;
 

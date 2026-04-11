@@ -29,7 +29,7 @@ public class User extends BaseEntity implements UserDetails {
     private String displayName;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "user_role")
+    @Column(nullable = false, columnDefinition = "user_role",length = 50)
     private Role role;
 
     @Column(nullable = false)

@@ -40,8 +40,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new DuplicateResourceException(
-                    "Email already in use: " + request.email());
+            throw new DuplicateResourceException("Email already in use: " + request.email());
         }
 
         User user = User.builder()

@@ -1,15 +1,11 @@
 -- ============================================================
 -- V1__init_schema.sql
 -- Initial schema for online-survey-service
+-- NOTE: Using VARCHAR(50) for enum columns instead of native
+-- PostgreSQL enum types. Hibernate @Enumerated(EnumType.STRING)
+-- sends plain VARCHAR — this avoids type cast errors entirely.
+-- CHECK constraints enforce valid values at the DB level.
 -- ============================================================
-
--- ─── ENUMS ─────────────────────────────────────────────────
-CREATE TYPE user_role AS ENUM ('ADMIN', 'CREATOR', 'RESPONDENT');
-CREATE TYPE survey_status AS ENUM ('DRAFT', 'PUBLISHED', 'CLOSED', 'ARCHIVED');
-CREATE TYPE question_type AS ENUM (
-    'TEXT', 'PARAGRAPH', 'SINGLE_CHOICE', 'MULTIPLE_CHOICE',
-    'RATING', 'DATE', 'EMAIL', 'NUMBER'
-);
 
 -- ─── USERS ─────────────────────────────────────────────────
 CREATE TABLE users (
@@ -17,10 +13,11 @@ CREATE TABLE users (
     email        VARCHAR(255) NOT NULL UNIQUE,
     password     VARCHAR(255) NOT NULL,
     display_name VARCHAR(100) NOT NULL,
-    role         user_role    NOT NULL DEFAULT 'RESPONDENT',
+    role         VARCHAR(50)  NOT NULL DEFAULT 'RESPONDENT',
     enabled      BOOLEAN      NOT NULL DEFAULT TRUE,
     created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    updated_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+    updated_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_user_role CHECK (role IN ('ADMIN', 'CREATOR', 'RESPONDENT'))
 );
 
 -- ─── REFRESH TOKENS ────────────────────────────────────────
@@ -35,33 +32,38 @@ CREATE TABLE refresh_tokens (
 
 -- ─── SURVEYS ───────────────────────────────────────────────
 CREATE TABLE surveys (
-    id            UUID          PRIMARY KEY DEFAULT gen_random_uuid(),
-    creator_id    UUID          NOT NULL REFERENCES users(id),
-    title         VARCHAR(255)  NOT NULL,
+    id            UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    creator_id    UUID         NOT NULL REFERENCES users(id),
+    title         VARCHAR(255) NOT NULL,
     description   TEXT,
-    slug          VARCHAR(300)  NOT NULL UNIQUE,
-    status        survey_status NOT NULL DEFAULT 'DRAFT',
-    is_anonymous  BOOLEAN       NOT NULL DEFAULT FALSE,
+    slug          VARCHAR(300) NOT NULL UNIQUE,
+    status        VARCHAR(50)  NOT NULL DEFAULT 'DRAFT',
+    is_anonymous  BOOLEAN      NOT NULL DEFAULT FALSE,
     max_responses INTEGER,
     start_date    TIMESTAMPTZ,
     end_date      TIMESTAMPTZ,
-    created_at    TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
-    updated_at    TIMESTAMPTZ   NOT NULL DEFAULT NOW()
+    created_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_survey_status CHECK (status IN ('DRAFT','PUBLISHED','CLOSED','ARCHIVED'))
 );
 
 -- ─── QUESTIONS ─────────────────────────────────────────────
 CREATE TABLE questions (
-    id           UUID          PRIMARY KEY DEFAULT gen_random_uuid(),
-    survey_id    UUID          NOT NULL REFERENCES surveys(id) ON DELETE CASCADE,
-    text         TEXT          NOT NULL,
+    id           UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    survey_id    UUID        NOT NULL REFERENCES surveys(id) ON DELETE CASCADE,
+    text         TEXT        NOT NULL,
     help_text    TEXT,
-    type         question_type NOT NULL,
-    order_index  INTEGER       NOT NULL DEFAULT 0,
-    is_required  BOOLEAN       NOT NULL DEFAULT TRUE,
+    type         VARCHAR(50) NOT NULL,
+    order_index  INTEGER     NOT NULL DEFAULT 0,
+    is_required  BOOLEAN     NOT NULL DEFAULT TRUE,
     min_value    INTEGER,
     max_value    INTEGER,
-    created_at   TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
-    updated_at   TIMESTAMPTZ   NOT NULL DEFAULT NOW()
+    created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_question_type CHECK (type IN (
+        'TEXT','PARAGRAPH','SINGLE_CHOICE','MULTIPLE_CHOICE',
+        'RATING','DATE','EMAIL','NUMBER'
+    ))
 );
 
 -- ─── OPTIONS ───────────────────────────────────────────────
@@ -76,8 +78,8 @@ CREATE TABLE options (
 CREATE TABLE responses (
     id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     survey_id     UUID        NOT NULL REFERENCES surveys(id),
-    respondent_id UUID        REFERENCES users(id),   -- NULL for anonymous
-    ip_address    VARCHAR(64),                         -- SHA-256 hashed
+    respondent_id UUID        REFERENCES users(id),
+    ip_address    VARCHAR(64),
     user_agent    VARCHAR(500),
     submitted_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

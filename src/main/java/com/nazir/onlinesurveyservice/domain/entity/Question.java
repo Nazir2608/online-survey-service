@@ -27,7 +27,7 @@ public class Question extends BaseEntity {
     private String helpText;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "question_type")
+    @Column(nullable = false, columnDefinition = "question_type",length = 50)
     private QuestionType type;
 
     @Column(name = "order_index", nullable = false)
