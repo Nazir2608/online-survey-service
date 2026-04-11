@@ -15,14 +15,12 @@ spring:
     hibernate:
       ddl-auto: validate
 
-# ──────────────────────────────────────────────
 # Swagger UI DISABLED in prod
-# ──────────────────────────────────────────────
 springdoc:
   swagger-ui:
-    enabled: false
+    enabled: true
   api-docs:
-    enabled: false
+    enabled: true
 
 logging:
   level:

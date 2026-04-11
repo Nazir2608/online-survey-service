@@ -16,9 +16,7 @@ spring:
     restart:
       enabled: true
 
-# ──────────────────────────────────────────────
 # Swagger UI enabled in dev
-# ──────────────────────────────────────────────
 springdoc:
   swagger-ui:
     enabled: true

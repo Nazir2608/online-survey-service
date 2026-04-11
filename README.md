@@ -113,7 +113,7 @@ src/main/java/com/nazir/onlinesurveyservice/
 
 ## Development Phases
 
-- [x] **Phase 1** — Foundation (project setup, DB schema, JWT auth)
+- [ ] **Phase 1** — Foundation (project setup, DB schema, JWT auth)
 - [ ] **Phase 2** — Survey CRUD (survey + question + option management)
 - [ ] **Phase 3** — Responses (submit, validate, anonymous support)
 - [ ] **Phase 4** — Analytics (aggregation, CSV export)
