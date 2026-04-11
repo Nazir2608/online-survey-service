@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/survey_db
+    username: survey_user
+    password: survey_pass
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 20000
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate   # Flyway owns schema; JPA only validates
+
+  devtools:
+    restart:
+      enabled: true
+
+# ──────────────────────────────────────────────
+# Swagger UI enabled in dev
+# ──────────────────────────────────────────────
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operations-sorter: method
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+
+logging:
+  level:
+    root: INFO
+    com.nazir.onlinesurveyservice: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
