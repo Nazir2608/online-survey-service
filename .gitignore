@@ -26,3 +26,8 @@ logs/
 
 # ─── Docker volumes ───────────────────────────────────────────
 docker-volumes/
+
+HELP.md
+.mvn/
+mvnw
+mvnw.cmd
