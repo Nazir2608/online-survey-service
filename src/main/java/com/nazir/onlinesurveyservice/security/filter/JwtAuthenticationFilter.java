@@ -31,10 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService  userDetailsService;
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest  request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain         filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest  request, @NonNull HttpServletResponse response, @NonNull FilterChain         filterChain) throws ServletException, IOException {
 
         final String token = extractToken(request);
 
@@ -51,15 +48,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 if (jwtTokenProvider.isTokenValid(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails, null, userDetails.getAuthorities());
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
         } catch (Exception e) {
-            log.warn("JWT authentication failed for request [{}]: {}",
-                    request.getRequestURI(), e.getMessage());
+            log.warn("JWT authentication failed for request [{}]: {}", request.getRequestURI(), e.getMessage());
         }
 
         filterChain.doFilter(request, response);
