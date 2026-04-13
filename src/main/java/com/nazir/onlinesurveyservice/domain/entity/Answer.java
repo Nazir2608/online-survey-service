@@ -36,11 +36,7 @@ public class Answer {
     private Integer ratingValue;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "answer_selected_options",
-            joinColumns = @JoinColumn(name = "answer_id"),
-            inverseJoinColumns = @JoinColumn(name = "option_id")
-    )
+    @JoinTable(name = "answer_selected_options", joinColumns = @JoinColumn(name = "answer_id"), inverseJoinColumns = @JoinColumn(name = "option_id"))
     @Builder.Default
     private Set<Option> selectedOptions = new HashSet<>();
 }
