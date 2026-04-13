@@ -29,12 +29,8 @@ public class QuestionController {
     @Operation(summary = "Add a question to a survey")
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<QuestionResponse> create(
-            @PathVariable UUID surveyId,
-            @AuthenticationPrincipal User user,
-            @Valid @RequestBody CreateQuestionRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(questionService.create(surveyId, user, request));
+    public ResponseEntity<QuestionResponse> create(@PathVariable UUID surveyId, @AuthenticationPrincipal User user, @Valid @RequestBody CreateQuestionRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(questionService.create(surveyId, user, request));
     }
 
     @Operation(summary = "List all questions for a survey")
@@ -45,30 +41,21 @@ public class QuestionController {
 
     @Operation(summary = "Get a single question")
     @GetMapping("/{questionId}")
-    public ResponseEntity<QuestionResponse> getById(
-            @PathVariable UUID surveyId,
-            @PathVariable UUID questionId) {
+    public ResponseEntity<QuestionResponse> getById(@PathVariable UUID surveyId, @PathVariable UUID questionId) {
         return ResponseEntity.ok(questionService.getById(surveyId, questionId));
     }
 
     @Operation(summary = "Update a question")
     @PutMapping("/{questionId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<QuestionResponse> update(
-            @PathVariable UUID surveyId,
-            @PathVariable UUID questionId,
-            @AuthenticationPrincipal User user,
-            @Valid @RequestBody CreateQuestionRequest request) {
+    public ResponseEntity<QuestionResponse> update(@PathVariable UUID surveyId, @PathVariable UUID questionId, @AuthenticationPrincipal User user, @Valid @RequestBody CreateQuestionRequest request) {
         return ResponseEntity.ok(questionService.update(surveyId, questionId, user, request));
     }
 
     @Operation(summary = "Delete a question")
     @DeleteMapping("/{questionId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> delete(
-            @PathVariable UUID surveyId,
-            @PathVariable UUID questionId,
-            @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> delete(@PathVariable UUID surveyId, @PathVariable UUID questionId, @AuthenticationPrincipal User user) {
         questionService.delete(surveyId, questionId, user);
         return ResponseEntity.noContent().build();
     }
@@ -76,10 +63,7 @@ public class QuestionController {
     @Operation(summary = "Reorder questions — pass ordered list of question IDs")
     @PutMapping("/reorder")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<QuestionResponse>> reorder(
-            @PathVariable UUID surveyId,
-            @AuthenticationPrincipal User user,
-            @Valid @RequestBody QuestionReorderRequest request) {
+    public ResponseEntity<List<QuestionResponse>> reorder(@PathVariable UUID surveyId, @AuthenticationPrincipal User user, @Valid @RequestBody QuestionReorderRequest request) {
         return ResponseEntity.ok(questionService.reorder(surveyId, user, request));
     }
 }
