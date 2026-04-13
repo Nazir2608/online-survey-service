@@ -29,7 +29,7 @@ public class User extends BaseEntity implements UserDetails {
     private String displayName;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "user_role",length = 50)
+    @Column(nullable = false, columnDefinition = "user_role", length = 50)
     private Role role;
 
     @Column(nullable = false)
@@ -49,11 +49,17 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonExpired()  { return true; }
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isAccountNonLocked()   { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 }
